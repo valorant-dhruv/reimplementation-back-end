@@ -3,14 +3,23 @@ class Role < ApplicationRecord
   belongs_to :parent, class_name: 'Role', optional: true
   has_many :users, dependent: :nullify
 
-  if Role.table_exists?
-    STUDENT = find_by_name('Student')
-    INSTRUCTOR = find_by_name('Instructor')
-    ADMINISTRATOR = find_by_name('Administrator')
-    TEACHING_ASSISTANT = find_by_name('Teaching Assistant')
-    SUPER_ADMINISTRATOR = find_by_name('Super Administrator')
-  end
+  # if Role.table_exists?
+  #   STUDENT = find_by_name('Student')
+  #   INSTRUCTOR = find_by_name('Instructor')
+  #   ADMINISTRATOR = find_by_name('Administrator')
+  #   TEACHING_ASSISTANT = find_by_name('Teaching Assistant')
+  #   SUPER_ADMINISTRATOR = find_by_name('Super Administrator')
+  # end
 
+
+
+  if Role.table_exists?
+    STUDENT = Role.find_by(name: 'Student') || Role.new(name: 'Student')
+    INSTRUCTOR = Role.find_by(name: 'Instructor') || Role.new(name: 'Instructor')
+    ADMINISTRATOR = Role.find_by(name: 'Administrator') || Role.new(name: 'Administrator')
+    TEACHING_ASSISTANT = Role.find_by(name: 'Teaching Assistant') || Role.new(name: 'Teaching Assistant')
+    SUPER_ADMINISTRATOR = Role.find_by(name: 'Super Administrator') || Role.new(name: 'Super Administrator')
+  end
 
   def super_administrator?
     name['Super Administrator']
@@ -47,6 +56,8 @@ class Role < ApplicationRecord
 
   # checks if the current role has all the privileges of the target role
   def all_privileges_of?(target_role)
+    return false if target_role.nil? || target_role.name.nil? || name.nil?
+  
     privileges = {
       'Student' => 1,
       'Teaching Assistant' => 2,
@@ -54,9 +65,10 @@ class Role < ApplicationRecord
       'Administrator' => 4,
       'Super Administrator' => 5
     }
-
-    privileges[name] >= privileges[target_role.name]
+  
+    privileges.fetch(name, 0) >= privileges.fetch(target_role.name, 0)
   end
+  
 
   # return list of all roles other than the current role
   def other_roles

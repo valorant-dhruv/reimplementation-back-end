@@ -17,4 +17,8 @@ class AssignmentParticipant < Participant
     self.save
   end
 
+  def teams
+    AssignmentTeam.joins(:participants).where(participants: { user_id: id })
+  end
+
 end

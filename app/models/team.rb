@@ -6,6 +6,8 @@ class Team < ApplicationRecord
   belongs_to :assignment
   attr_accessor :max_participants
 
+  attr_accessible :parent_id if defined?(attr_accessible)
+
   # TODO Team implementing Teams controller and model should implement this method better.
   # TODO partial implementation here just for the functionality needed for join_team_tequests controller
   def full?

@@ -2,8 +2,7 @@ source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '3.2.7'
-
-gem 'mysql2', '~> 0.5.5'
+gem 'sqlite3'
 gem 'puma', '~> 5.0'
 gem 'rails', '~> 8.0', '>= 8.0.1'
 gem 'rswag-api'
@@ -46,6 +45,7 @@ group :development, :test do
   gem 'simplecov', require: false, group: :test
   gem 'coveralls'
   gem 'simplecov_json_formatter'
+  gem 'shoulda-matchers'
 end
 
 group :development do

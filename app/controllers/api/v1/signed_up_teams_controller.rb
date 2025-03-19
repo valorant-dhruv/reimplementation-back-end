@@ -43,14 +43,21 @@ class Api::V1::SignedUpTeamsController < ApplicationController
     user_id = params[:user_id]
     topic_id = params[:topic_id]
     team_id = SignedUpTeam.get_team_participants(user_id)
+
+
+    if team_id.nil?
+      render json: { error: "No team found for the given user." }, status: :unprocessable_entity
+      return
+    end
+
     # @teams_user = TeamsUser.where(user_id: user_id).first
     # team_id = @teams_user.team_id
     @signed_up_team = SignedUpTeam.create_signed_up_team(topic_id, team_id)
     # create(topic_id, team_id)
-    if @signed_up_team
+    if @signed_up_team.persisted?
       render json: { message: "Signed up team successful!" }, status: :created
     else
-      render json: { message: @signed_up_team.errors }, status: :unprocessable_entity
+      render json: { error: @signed_up_team.errors.full_messages }, status: :unprocessable_entity
     end
   end
 

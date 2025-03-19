@@ -1,33 +1,45 @@
 class Api::V1::StudentTeamsController < ApplicationController
+  include StudentTeamsHelper
+    
+    rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
+    rescue_from ActionController::ParameterMissing, with: :parameter_missing
     before_action :set_student, only: %i[create index show]
     before_action :set_team, only: %i[show]
 
-    # GET /student_teams
+    # GET /api/v1/student_teams
+    # Returns all teams associated with a student
+    # @return [JSON] List of teams
+    # @response_status 200 Success
     def index
-        @teams = @student.teams
-        render json: { teams: @teams }, status: :ok
+        result = fetch_student_teams
+        render json: result, status: :ok 
     end
   
-    # GET /student_teams/:id
+    # GET /api/v1/student_teams/:id
+    # Returns specific team and its members
+    # @return [JSON] Team details and member list
+    # @response_status 200 Success
+    # @response_status 404 Not Found
     def show
-        render json: { team: @team, members: @team.members }, status: :ok
-    rescue ActiveRecord::RecordNotFound
-        render json: { error: 'Team not found' }, status: :not_found
+        result = fetch_team_details
+        if result[:error]
+          render json: result, status: :not_found  # 404
+        else
+          render json: result, status: :ok  # 200
+        end
     end
   
-    # POST /student_teams
+    # POST /api/v1/student_teams
+    # Creates a new team with the current student as first member
+    # @return [JSON] Created team details or error message
+    # @response_status 201 Created
+    # @response_status 422 Unprocessable Entity
     def create
-        if team_name_taken?
-            render json: { error: 'Team name is already in use' }, status: :unprocessable_entity
-            return
-        end
-        
-        @team = AssignmentTeam.new(team_params.merge(parent_id: @student.parent_id))
-        if @team.save
-            @team.add_member(@student.user, @team.parent_id)
-            render json: { message: 'Team created successfully', team: @team }, status: :created
+        result = create_student_team
+        if result[:error]
+          render json: result, status: :unprocessable_entity  # 422
         else
-            render json: { error: 'Failed to create team', details: @team.errors.full_messages }, status: :unprocessable_entity
+          render json: result, status: :created  # 201
         end
     end
   
@@ -47,30 +59,5 @@ class Api::V1::StudentTeamsController < ApplicationController
     def add_participant
       
     end
-
-
-
-    private
-
-    def set_student
-        @student = AssignmentParticipant.find(params[:student_id])
-    rescue ActiveRecord::RecordNotFound
-        render json: { error: 'Student not found' }, status: :not_found
-    end
-
-    def set_team
-        @team = AssignmentTeam.find(params[:id])
-    rescue ActiveRecord::RecordNotFound
-        render json: { error: 'Team not found' }, status: :not_found
-    end
-
-    def team_params
-        params.require(:team).permit(:name)
-    end
-
-    def team_name_taken?
-        AssignmentTeam.exists?(name: params[:team][:name], parent_id: @student.parent_id)
-    end
-    
   
   end

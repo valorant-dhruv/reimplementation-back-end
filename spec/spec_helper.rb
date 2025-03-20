@@ -1,5 +1,5 @@
 require 'simplecov'
-require 'coveralls_reborn'
+require 'coveralls'
 
 SimpleCov.start 'rails' do
   add_filter '/spec/' # Exclude test files from coverage

@@ -75,17 +75,26 @@ module StudentTeamsHelper
   # @return [Hash] success or error message
   def add_team_participant(participant_id)
     participant = AssignmentParticipant.find(participant_id)
+
+    # Check if the participant is already in a team for this assignment
+    if participant.team.present?
+      return { 
+        status: 'error', 
+        error: 'Participant is already in a team for this assignment' 
+      }
+    end
+
     success, message = @team.add_member(participant, @team.parent_id)
     
-    if success
+    if  @team.add_member(participant)
       {
         status: 'success',
-        message: message
+        message: 'Participant added to the team successfully'
       }
     else
       {
         status: 'error',
-        error: message
+        error: 'Failed to add participant to the team'
       }
     end
   rescue ActiveRecord::RecordNotFound
@@ -141,6 +150,7 @@ module StudentTeamsHelper
   end
 
   def set_team
+    puts "Team ID: #{params[:id]}"
     @team = AssignmentTeam.find(params[:id])
   rescue ActiveRecord::RecordNotFound
     render json: { 

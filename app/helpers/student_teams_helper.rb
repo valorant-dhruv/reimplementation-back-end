@@ -153,7 +153,6 @@ module StudentTeamsHelper
   end
 
   def set_team
-    puts "Team ID: #{params[:id]}"
     @team = AssignmentTeam.find(params[:id])
   rescue ActiveRecord::RecordNotFound
     render json: { 

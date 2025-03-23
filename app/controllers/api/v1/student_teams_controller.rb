@@ -49,8 +49,6 @@ class Api::V1::StudentTeamsController < ApplicationController
   
     def update
       # Check if the team exists
-      puts "Team ID: #{params[:id]}"
-      puts "Team found: #{@team.inspect}"
       return render json: { error: 'Team not found' }, status: :not_found unless @team
     
       # Check if the new team name is already taken by another team
@@ -120,8 +118,6 @@ class Api::V1::StudentTeamsController < ApplicationController
       participant_id = params[:participant_id] || params[:student_team][:participant_id]
 
       # Debugging: Print the values
-      puts "Team ID: #{team_id}"
-      puts "Participant ID: #{participant_id}"
 
       @team = AssignmentTeam.find_by(id: team_id)
       return render json: { error: 'Team not found' }, status: :not_found unless @team

@@ -186,4 +186,108 @@ RSpec.describe Api::V1::StudentTeamsController, type: :controller do
       end
     end
   end
+
+  describe 'PUT #update' do
+    let(:mock_team) { double('AssignmentTeam') }
+    let(:team_params) { { name: "Updated Team Name" } }
+
+    context 'when team exists and update is successful' do
+      before do
+        # Mock team lookup
+        allow(AssignmentTeam).to receive(:find).with("7").and_return(mock_team)
+        # Mock current team name
+        allow(mock_team).to receive(:name).and_return("Old Team Name")
+        # Mock exists? check for name uniqueness
+        allow(AssignmentTeam).to receive(:exists?).with(name: "Updated Team Name").and_return(false)
+        # Mock update
+        allow(mock_team).to receive(:update).with(name: "Updated Team Name").and_return(true)
+        # Mock inspect for debugging
+        allow(mock_team).to receive(:inspect).and_return("Mock Team")
+      end
+
+      it 'updates the team name successfully' do
+        put :update, params: { id: "7", team: team_params }
+
+        expect(response).to have_http_status(:ok)
+        json_response = JSON.parse(response.body)
+        expect(json_response['status']).to eq('success')
+        expect(json_response['message']).to eq('Team name updated successfully')
+        expect(json_response['team']).to be_present
+      end
+    end
+
+    context 'when team name is already taken' do
+      before do
+        allow(AssignmentTeam).to receive(:find).with("7").and_return(mock_team)
+        allow(mock_team).to receive(:name).and_return("Old Team Name")
+        allow(AssignmentTeam).to receive(:exists?).with(name: "Updated Team Name").and_return(true)
+        allow(mock_team).to receive(:inspect).and_return("Mock Team")
+      end
+
+      it 'returns an error' do
+        put :update, params: { id: "7", team: team_params }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        json_response = JSON.parse(response.body)
+        expect(json_response['error']).to eq('Team name is already in use')
+      end
+    end
+
+    context 'when updating to the same name' do
+      before do
+        allow(AssignmentTeam).to receive(:find).with("7").and_return(mock_team)
+        allow(mock_team).to receive(:name).and_return("Updated Team Name")
+        allow(AssignmentTeam).to receive(:exists?).with(name: "Updated Team Name").and_return(true)
+        allow(mock_team).to receive(:update).with(name: "Updated Team Name").and_return(true)
+        allow(mock_team).to receive(:inspect).and_return("Mock Team")
+      end
+
+      it 'allows the update' do
+        put :update, params: { id: "7", team: team_params }
+
+        expect(response).to have_http_status(:ok)
+        json_response = JSON.parse(response.body)
+        expect(json_response['status']).to eq('success')
+        expect(json_response['message']).to eq('Team name updated successfully')
+      end
+    end
+
+    context 'when team is not found' do
+      before do
+        allow(AssignmentTeam).to receive(:find).with("999")
+          .and_raise(ActiveRecord::RecordNotFound)
+      end
+
+      it 'returns not found error' do
+        put :update, params: { id: "999", team: team_params }
+
+        expect(response).to have_http_status(:not_found)
+        json_response = JSON.parse(response.body)
+        expect(json_response['error']).to eq('Team not found')
+      end
+    end
+
+    context 'when update fails' do
+      before do
+        allow(AssignmentTeam).to receive(:find).with("7").and_return(mock_team)
+        allow(mock_team).to receive(:name).and_return("Old Team Name")
+        allow(AssignmentTeam).to receive(:exists?).with(name: "Updated Team Name").and_return(false)
+        allow(mock_team).to receive(:update).with(name: "Updated Team Name").and_return(false)
+        allow(mock_team).to receive(:errors).and_return(
+          double(full_messages: ['Name is invalid'])
+        )
+        allow(mock_team).to receive(:inspect).and_return("Mock Team")
+      end
+
+      it 'returns validation errors' do
+        put :update, params: { id: "7", team: team_params }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        json_response = JSON.parse(response.body)
+        expect(json_response['status']).to eq('error')
+        expect(json_response['error']).to eq('Failed to update team name')
+        expect(json_response['details']).to include('Name is invalid')
+      end
+    end
+  end
 end

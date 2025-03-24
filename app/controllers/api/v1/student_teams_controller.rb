@@ -77,9 +77,9 @@ class Api::V1::StudentTeamsController < ApplicationController
     #DELETE /api/v1/student_teams/:id
     def destroy
       begin
-        @team.participants.destroy_all
+        #@team.participants.destroy_all
         # Remove all team-user associations
-        @team.teams_users.destroy_all
+        #@team.teams_users.destroy_all
     
         if @team.destroy
           render json: { message: 'Team successfully deleted' }, status: :ok #200

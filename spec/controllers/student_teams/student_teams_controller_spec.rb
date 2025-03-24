@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Api::V1::StudentTeamsController, type: :controller do
-  describe 'GET #index' do
+  describe '#index' do
     # Create a mock student and teams
     let(:mock_student) { instance_double(AssignmentParticipant) }
     let(:mock_teams) { [
@@ -27,7 +27,7 @@ RSpec.describe Api::V1::StudentTeamsController, type: :controller do
     end
   end
 
-  describe 'GET #show' do
+  describe '#show' do
     let(:mock_student) { instance_double(AssignmentParticipant) }
     let(:mock_team) { instance_double(AssignmentTeam) }
     let(:mock_members) { [
@@ -92,7 +92,7 @@ RSpec.describe Api::V1::StudentTeamsController, type: :controller do
     end
   end
 
-  describe 'POST #create' do
+  describe '#create' do
     let(:mock_student) { instance_double(AssignmentParticipant) }
     let(:mock_team) { instance_double(AssignmentTeam) }
     let(:team_params) { { name: "New Team", assignment_id: "1" } }
@@ -187,7 +187,7 @@ RSpec.describe Api::V1::StudentTeamsController, type: :controller do
     end
   end
 
-  describe 'PUT #update' do
+  describe '#update' do
     let(:mock_team) { double('AssignmentTeam') }
     let(:team_params) { { name: "Updated Team Name" } }
 
@@ -291,7 +291,7 @@ RSpec.describe Api::V1::StudentTeamsController, type: :controller do
     end
   end
 
-  describe 'DELETE #destroy' do
+  describe '#destroy' do
     let(:mock_team) { double('AssignmentTeam') }
 
     context 'when team exists and is successfully deleted' do
@@ -343,7 +343,7 @@ RSpec.describe Api::V1::StudentTeamsController, type: :controller do
     end
   end
 
-  describe 'DELETE #remove_participant' do
+  describe '#remove_participant' do
     let(:mock_team) { double('AssignmentTeam') }
 
     context 'when participant is successfully removed' do
@@ -406,7 +406,7 @@ RSpec.describe Api::V1::StudentTeamsController, type: :controller do
     end
   end
 
-  describe 'POST #add_participant' do
+  describe '#add_participant' do
     let(:mock_team) { double('AssignmentTeam') }
 
     context 'when participant is successfully added' do

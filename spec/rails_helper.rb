@@ -8,6 +8,7 @@ require 'rspec/rails'
 
 require 'factory_bot_rails'
 RSpec.configure do |config|
+  config.formatter = :documentation
   config.include FactoryBot::Syntax::Methods
   config.before(:suite) do
     FactoryBot.factories.clear

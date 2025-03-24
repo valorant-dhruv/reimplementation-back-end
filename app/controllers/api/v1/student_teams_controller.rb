@@ -144,6 +144,7 @@ class Api::V1::StudentTeamsController < ApplicationController
       
     end
   
+    #Removes the user from the team
     def remove_team_user(team_user)
   
       return false unless team_user&.destroy
@@ -151,7 +152,8 @@ class Api::V1::StudentTeamsController < ApplicationController
   
     end
     
-  
+
+    # Updates the team name successfully
     def handle_successful_update
       
       flash[:success] = 'Team name updated successfully!'

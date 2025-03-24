@@ -53,6 +53,13 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :student_teams do
+        member do
+          post :add_participant
+          delete :remove_participant
+        end
+      end
+
       resources :courses do
         collection do
           get ':id/add_ta/:ta_id', action: :add_ta

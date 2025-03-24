@@ -15,6 +15,7 @@ if Rails.env.test?
 end
 
 RSpec.configure do |config|
+  config.formatter = :documentation
   config.include FactoryBot::Syntax::Methods
   config.before(:suite) do
     FactoryBot.factories.clear
@@ -46,8 +47,12 @@ RSpec.configure do |config|
   end
 end
 
-# Load support files
-Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
+  end
+end
 
 # Add additional requires below this line. Rails is not loaded until this point!
 

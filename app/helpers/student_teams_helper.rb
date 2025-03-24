@@ -38,11 +38,11 @@ module StudentTeamsHelper
   # @return [Hash] created team details or error message
   def create_student_team
     return { error: 'Team name is already in use' } if team_name_taken?
-
-    team = AssignmentTeam.new(team_params.merge(parent_id: @student.parent_id))
+  
+    team = AssignmentTeam.new(team_params.merge(assignment_id: @student.assignment_id))
     
     if team.save
-      success, message = team.add_member(@student, team.parent_id)  # Updated to pass participant
+      success, message = team.add_member(@student, team.assignment_id)  # Updated to use assignment_id
       if success
         {
           status: 'success',
@@ -75,17 +75,26 @@ module StudentTeamsHelper
   # @return [Hash] success or error message
   def add_team_participant(participant_id)
     participant = AssignmentParticipant.find(participant_id)
+
+    # Check if the participant is already in a team for this assignment
+    if participant.team.present?
+      return { 
+        status: 'error', 
+        error: 'Participant is already in a team for this assignment' 
+      }
+    end
+
     success, message = @team.add_member(participant, @team.parent_id)
     
-    if success
+    if  @team.add_member(participant)
       {
         status: 'success',
-        message: message
+        message: 'Participant added to the team successfully'
       }
     else
       {
         status: 'error',
-        error: message
+        error: 'Failed to add participant to the team'
       }
     end
   rescue ActiveRecord::RecordNotFound
@@ -131,13 +140,16 @@ module StudentTeamsHelper
 
   private
 
+  private
+
   def set_student
     @student = AssignmentParticipant.find(params[:id])
-  rescue ActiveRecord::RecordNotFound
-    render json: { 
-      status: 'error',
-      error: 'Student not found' 
-    }, status: :not_found
+    if @student.nil?
+      render json: { 
+        status: 'error',
+        error: 'Student not found' 
+      }, status: :not_found
+    end
   end
 
   def set_team

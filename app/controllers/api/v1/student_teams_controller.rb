@@ -45,8 +45,6 @@ class Api::V1::StudentTeamsController < ApplicationController
 
     # PUT /api/v1/student_teams/:id
     # Updates the team names
-    
-  
     def update
       # Check if the team exists
       return render json: { error: 'Team not found' }, status: :not_found unless @team
@@ -80,7 +78,6 @@ class Api::V1::StudentTeamsController < ApplicationController
         #@team.participants.destroy_all
         # Remove all team-user associations
         #@team.teams_users.destroy_all
-    
         if @team.destroy
           render json: { message: 'Team successfully deleted' }, status: :ok #200
         else
@@ -122,7 +119,6 @@ class Api::V1::StudentTeamsController < ApplicationController
       participant_id = params[:participant_id] || params[:student_team][:participant_id]
 
       # Debugging: Print the values
-
       @team = AssignmentTeam.find_by(id: team_id)
       return render json: { error: 'Team not found' }, status: :not_found unless @team
 
@@ -135,6 +131,7 @@ class Api::V1::StudentTeamsController < ApplicationController
       # Call the helper method to add the participant
       result = add_team_participant(params[:participant_id])
 
+      
       # Render the result returned by the helper method
       if result[:status] == 'success'
         render json: result, status: :ok

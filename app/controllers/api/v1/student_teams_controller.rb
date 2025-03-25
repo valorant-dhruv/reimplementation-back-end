@@ -143,7 +143,10 @@ class Api::V1::StudentTeamsController < ApplicationController
   
     def remove_team_user(team_user)
   
+      # Check if the team_user object exists and destroy it
       return false unless team_user&.destroy
+      
+      # Set a flash message on successful removal
       flash[:success] = "User was successfully removed from the team!"
   
     end
@@ -151,7 +154,10 @@ class Api::V1::StudentTeamsController < ApplicationController
   
     def handle_successful_update
       
+      # Set a flash message to indicate the team name was successfully updated
       flash[:success] = 'Team name updated successfully!'
+
+      # Redirect the user to the student team view page
       redirect_to view_student_teams_path(student_id: params[:student_id])
       
     end

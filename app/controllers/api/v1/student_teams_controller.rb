@@ -151,7 +151,7 @@ class Api::V1::StudentTeamsController < ApplicationController
   
     end
     
-  
+    
     def handle_successful_update
       
       # Set a flash message to indicate the team name was successfully updated

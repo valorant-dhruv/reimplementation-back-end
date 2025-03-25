@@ -5,7 +5,7 @@
      port: 3306
      socket: /var/run/mysqld/mysqld.sock
      username: dev
-     password: Root123
+     password: Root@123
      host: localhost
 
    development:

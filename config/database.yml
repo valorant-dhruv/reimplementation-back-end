@@ -4,8 +4,8 @@
      pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
      port: 3306
      socket: /var/run/mysqld/mysqld.sock
-     username: your_mysql_username
-     password: your_mysql_password
+     username: dev
+     password: Root123
      host: localhost
 
    development:

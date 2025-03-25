@@ -1,18 +1,23 @@
-default: &default
-  adapter: mysql2
-  encoding: utf8mb4
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  port: 3306
-  socket: /var/run/mysqld/mysqld.sock
+   default: &default
+     adapter: mysql2
+     encoding: utf8mb4
+     pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+     port: 3306
+     socket: /var/run/mysqld/mysqld.sock
+     username: your_mysql_username
+     password: your_mysql_password
+     host: localhost
 
-development:
-  <<: *default
-  url: <%= ENV['DATABASE_URL'].gsub('?', '_development?') %>
+   development:
+     <<: *default
+     database: your_app_development
 
-test:
-  <<: *default
-  url: <%= ENV['DATABASE_URL'].gsub('?', '_test?') %>
+   test:
+     <<: *default
+     database: your_app_test
 
-production:
-  <<: *default
-  url: <%= ENV['DATABASE_URL'].gsub('?', '_production?') %>
+   production:
+     <<: *default
+     database: your_app_production
+     username: your_production_username
+     password: <%= ENV['YOUR_DATABASE_PASSWORD'] %>

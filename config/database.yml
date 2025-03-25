@@ -1,16 +1,18 @@
 default: &default
-  adapter: sqlite3
+  adapter: mysql2
+  encoding: utf8mb4
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  timeout: 5000
+  port: 3306
+  socket: /var/run/mysqld/mysqld.sock
 
 development:
   <<: *default
-  database: db/development.sqlite3
+  url: <%= ENV['DATABASE_URL'].gsub('?', '_development?') %>
 
 test:
   <<: *default
-  database: db/test.sqlite3
+  url: <%= ENV['DATABASE_URL'].gsub('?', '_test?') %>
 
 production:
   <<: *default
-  database: db/production.sqlite3
+  url: <%= ENV['DATABASE_URL'].gsub('?', '_production?') %>

@@ -46,4 +46,13 @@ class CourseTeam < Team
   def type_must_be_course_team
     errors.add(:type, 'must be CourseTeam') unless type == 'CourseTeam'
   end
+  
+  def context
+    course
+  end
+
+  def context_key
+    :course
+  end
+  
 end 

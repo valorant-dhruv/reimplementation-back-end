@@ -130,6 +130,15 @@ Rails.application.routes.draw do
           get 'join_requests'
           post 'join_requests', to: 'teams#create_join_request'
           put 'join_requests/:join_request_id', to: 'teams#update_join_request'
+
+      resources :teams_participants, only: [] do
+        collection do
+          put :update_duty
+        end
+        member do
+          get :list_participants
+          post :add_participant
+          delete :delete_participants
         end
       end
     end

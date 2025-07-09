@@ -43,4 +43,13 @@ class AssignmentTeam < Team
   def type_must_be_assignment_or_mentored_team
     errors.add(:type, 'must be AssignmentTeam or MentoredTeam') unless %w[AssignmentTeam MentoredTeam].include?(type)
   end
+  
+  def context
+    assignment
+  end
+
+  def context_key
+    :assignment
+  end
+  
 end 

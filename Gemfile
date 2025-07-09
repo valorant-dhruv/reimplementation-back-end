@@ -49,6 +49,7 @@ group :development, :test do
   gem 'coveralls'
   gem 'simplecov_json_formatter'
   gem 'shoulda-matchers'
+  gem 'danger'
 end
 
 group :development do

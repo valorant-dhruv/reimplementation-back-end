@@ -131,6 +131,8 @@ Rails.application.routes.draw do
           post 'join_requests', to: 'teams#create_join_request'
           put 'join_requests/:join_request_id', to: 'teams#update_join_request'
         end
+      end
+      
       resources :teams_participants, only: [] do
         collection do
           put :update_duty

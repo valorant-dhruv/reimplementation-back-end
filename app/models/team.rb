@@ -1,5 +1,4 @@
 class Team < ApplicationRecord
-  self.inheritance_column = :type
 
   # Core associations
   belongs_to :user, optional: true # Team creator

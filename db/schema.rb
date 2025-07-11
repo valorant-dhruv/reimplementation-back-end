@@ -373,7 +373,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_27_014225) do
     t.string "name", null: false
     t.bigint "user_id", null: false
     t.integer "max_team_size", default: 4, null: false
-    t.string "type"
     t.bigint "mentor_id"
     t.bigint "course_id", null: false
     t.index ["assignment_id"], name: "index_teams_on_assignment_id"
@@ -381,7 +380,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_27_014225) do
     t.index ["mentor_id"], name: "index_teams_on_mentor_id"
     t.index ["user_id"], name: "fk_rails_45096701b6"
     t.integer "parent_id", null: false
-    t.string "type", null: false
   end
 
   create_table "teams_participants", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
